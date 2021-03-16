@@ -33,7 +33,6 @@ class Users {
 
   async exists(login) {
     return new Promise((resolve, reject) => {
-      console.log("focntion user exists entrée")
       var stmt = this.db.prepare("SELECT login FROM users WHERE login = ?")
       stmt.get([login], function(err, res){
         if(err) {

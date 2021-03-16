@@ -87,15 +87,25 @@ function init(db) {
     })
         .delete((req, res, next) => res.send(`delete user ${req.params.user_id}`));
 
-    router.post("/user", (req, res) => {
+    router.post("/user", async (req, res) => {                   //création 
         const { login, password, lastname, firstname } = req.body;
         if (!login || !password || !lastname || !firstname) {
             res.status(400).send("Missing fields");
-        } else {
-            users.create(login, password, lastname, firstname)
-                .then((user_id) => res.status(201).send({ id: user_id }))
-                .catch((err) => res.status(500).send(err));
+            return;
+        } 
+
+        if( await users.exists(login)) {
+            res.status(401).json({
+                status: 401,
+                message: "Utilisateur déja existant"
+            });
+            return;
+
         }
+        users.create(login, password, lastname, firstname)
+            .then((user_id) => res.status(201).send({ id: user_id }))
+            .catch((err) => res.status(500).send(err));
+        
     });
 
     return router;
