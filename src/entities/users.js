@@ -47,13 +47,14 @@ class Users {
 
   async checkpassword(login, password) {
     return new Promise((resolve, reject) => {
-      let userid = 1; // À remplacer par une requête bd
-      if(false) {
-        //erreur
-        reject();
-      } else {
-        resolve(userid);
-      }
+      var stmt = db.prepare("SELECT rowid as user_id  FROM users WHERE login = ? and password = ?")
+      stmt.get([login, password], function(err, res){
+        if (err){
+          reject(err);
+        }else{
+          resolve(res.user_id);
+        }
+      })
     });
   }
 

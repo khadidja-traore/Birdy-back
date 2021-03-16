@@ -23,13 +23,11 @@ app.use(session({
 
 app.use('/api', api.default(db));
 
-// Démarre le serveur
+
 app.on('close', () => {
     db.close();
 });
 
-//fermeture de la BD
-//db.close();
 
 exports.default = app;
 
