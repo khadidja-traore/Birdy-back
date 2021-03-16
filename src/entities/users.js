@@ -47,7 +47,7 @@ class Users {
 
   async checkpassword(login, password) {
     return new Promise((resolve, reject) => {
-      var stmt = db.prepare("SELECT rowid as user_id  FROM users WHERE login = ? and password = ?")
+      var stmt = this.db.prepare("SELECT rowid as user_id  FROM users WHERE login = ? and password = ?")
       stmt.get([login, password], function(err, res){
         if (err){
           reject(err);
