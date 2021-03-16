@@ -75,6 +75,7 @@ function init(db) {
         .get(async (req, res) => {
         try {
             const user = await users.get(req.params.user_id);
+            console.log(user);
             if (!user)
                 res.sendStatus(404);
             else
