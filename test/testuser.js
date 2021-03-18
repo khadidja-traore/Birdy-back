@@ -19,7 +19,7 @@ mocha.describe("Test de l'API user", () => {
         };
 
         request
-            .put('/api/user')
+            .post('/api/user')
             .send(user)
 
             .then((res) => {

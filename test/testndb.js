@@ -37,7 +37,7 @@
 // getdocument(db).then((res) => {
 //     console.log(res);
 // })
-
+/*
 var Datastore = require('nedb')
   , db = new Datastore();
 
@@ -80,7 +80,7 @@ getMessageID("158","Voila le texte du comentaire").then((id)=>{
     console.log(docs);
   });
 });
-
+*/
 
 // var inputDate = new Date(myDate.toISOString());
 // MyModel.find({
