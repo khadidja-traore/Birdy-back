@@ -29,13 +29,13 @@ req3.run(['pikachu', 'pikapika', 'chu', 'pika'], (err) => {
 });
 
 
-req4 = 'SELECT DISTINCT rowid, lastname name FROM users WHERE rowid = 1 ORDER BY name;';
+req4 = 'SELECT DISTINCT rowid, lastname name FROM users WHERE rowid = 3 ORDER BY name;';
 // get pour un seul
 db.all(req4, [], (err, rows) => {
   if (err) {
-      throw err ;
+      console.log(err) ;
   }
   rows.forEach((row) => {
-      console.log(row.name);
+      console.log(row);
   });
 });

@@ -57,6 +57,19 @@ class Users {
     });
   }
 
+  async delete(userid) {
+    return new Promise ((resolve, reject) => {
+      var stmt = this.db.prepare("DELETE FROM users WHERE rowid = ?")
+      stmt.run([userid], function(err){
+        if(err){
+          reject(err);
+        }else{
+          resolve(userid)
+        }
+      })
+    });
+  }
+
 }
 
 exports.default = Users;

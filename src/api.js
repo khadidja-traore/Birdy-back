@@ -75,9 +75,11 @@ function init(db) {
         .get(async (req, res) => {
         try {
             const user = await users.get(req.params.user_id);
-            console.log(user);
             if (!user)
-                res.sendStatus(404);
+                res.status(404).json({
+                    status: 404,
+                    message: "utilisateur non trouvé"
+                });
             else
                 res.send(user);
         }
@@ -85,26 +87,60 @@ function init(db) {
             res.status(500).send(e);
         }
     })
-        .delete((req, res, next) => res.send(`delete user ${req.params.user_id}`));
+        .delete(async (req, res, next) => {
+            try {
+                const user = await users.get(req.params.user_id);
+                if (!user) {
+                    res.status(404).json({
+                    status: 404,
+                    message: "utilisateur non trouvé"
+                     });
+                     return;
+                }
+                users.delete(req.params.user_id)
+                .then((user_id) => res.status(201).json({status: "200", message: "Utilisateur supprimé"}))
+                .catch((err) => res.status(500).send(err));
+             
+
+            } catch(e) {
+                res.status(500).json({
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                });
+            }
+            
+
+    })
 
     router.post("/user", async (req, res) => {                   //création 
-        const { login, password, lastname, firstname } = req.body;
-        if (!login || !password || !lastname || !firstname) {
-            res.status(400).send("Missing fields");
-            return;
-        } 
+        try{
+            const { login, password, lastname, firstname } = req.body;
+            if (!login || !password || !lastname || !firstname) {
+                res.status(400).send("Missing fields");
+                return;
+            } 
 
-        if( await users.exists(login)) {
-            res.status(401).json({
-                status: 401,
-                message: "Utilisateur déja existant"
+            if( await users.exists(login)) {
+                res.status(401).json({
+                    status: 401,
+                    message: "Utilisateur déja existant"
+                });
+            return;
+
+            }
+            users.create(login, password, lastname, firstname)
+                .then((user_id) => res.status(201).send({ id: user_id }))
+                .catch((err) => res.status(500).send(err));
+
+        }catch(e){
+            res.status(500).json({
+                status: 500,
+                message: "erreur interne",
+                details: (e || "Erreur inconnue").toString()
             });
-            return;
-
         }
-        users.create(login, password, lastname, firstname)
-            .then((user_id) => res.status(201).send({ id: user_id }))
-            .catch((err) => res.status(500).send(err));
+        
         
     });
 
