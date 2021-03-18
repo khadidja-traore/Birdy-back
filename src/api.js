@@ -70,6 +70,31 @@ function init(db) {
         }
     });
 
+    router.delete("/user/logout/:user_id(\\d+)", (req, res) => {
+
+        userid = req.params.user_id;
+        
+        if(req.session.userid != userid){
+            res.status(400).json({status: 400, message: "Ce n'est pas la bonne session"});
+            return;
+        }
+        
+       console.log(req.session);
+       
+       if(req.session.userid == userid){
+            req.session.destroy((err) => {
+                if (err){
+                    res.status(400).json({message: "Déconnexion impossible"})
+                } else {
+                    res.status(200).json({status: 200, message: "Déconnexion réussie"})
+                }
+            })
+        } else {
+            res.status(400).json({satus: 400, message: "Pas de session en cours"})
+        }
+
+    });
+
     router
         .route("/user/:user_id(\\d+)")
         .get(async (req, res) => {
