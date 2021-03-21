@@ -75,7 +75,7 @@ function init(db) {
         userid = req.params.user_id;
         
         if(req.session.userid != userid){
-            res.status(400).json({status: 400, message: "Ce n'est pas la bonne session"});
+            res.status(403).json({status: 403, message: "Pas la bonne session"});
             return;
         }
         
@@ -84,13 +84,13 @@ function init(db) {
        if(req.session.userid == userid){
             req.session.destroy((err) => {
                 if (err){
-                    res.status(400).json({message: "Déconnexion impossible"})
+                    res.status(500).json({status: 500, message: "Erreur interne"})
                 } else {
                     res.status(200).json({status: 200, message: "Déconnexion réussie"})
                 }
             })
         } else {
-            res.status(400).json({satus: 400, message: "Pas de session en cours"})
+            res.status(409).json({status: 409, message: "Pas de session en cours"})
         }
 
     });
@@ -101,8 +101,8 @@ function init(db) {
         try {
             const user = await users.get(req.params.user_id);
             if (!user)
-                res.status(404).json({
-                    status: 404,
+                res.status(401).json({
+                    status: 401,
                     message: "utilisateur non trouvé"
                 });
             else
@@ -114,10 +114,19 @@ function init(db) {
     })
         .delete(async (req, res, next) => {
             try {
+
+                userid = req.params.user_id;
+        
+                if(req.session.userid != userid){
+                    res.status(403).json({status: 403, message: "Suppresion interdite"});
+                    return;
+                }
+
                 const user = await users.get(req.params.user_id);
+
                 if (!user) {
-                    res.status(404).json({
-                    status: 404,
+                    res.status(401).json({
+                    status: 401,
                     message: "utilisateur non trouvé"
                      });
                      return;
@@ -147,8 +156,8 @@ function init(db) {
             } 
 
             if( await users.exists(login)) {
-                res.status(401).json({
-                    status: 401,
+                res.status(409).json({
+                    status: 409,
                     message: "Utilisateur déja existant"
                 });
             return;

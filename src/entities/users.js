@@ -51,7 +51,11 @@ class Users {
         if (err){
           reject(err);
         }else{
-          resolve(res.user_id);
+          if (res == undefined){
+            resolve(res)
+          } else {
+            resolve(res.user_id);
+          }
         }
       })
     });

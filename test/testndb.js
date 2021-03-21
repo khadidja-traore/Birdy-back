@@ -37,7 +37,7 @@
 // getdocument(db).then((res) => {
 //     console.log(res);
 // })
-/*
+
 var Datastore = require('nedb')
   , db = new Datastore();
 
@@ -61,7 +61,7 @@ db.users.find({date:{$gt:new Date(Date.now()-60*60*1000)}},function(err,docs){
   console.log(docs);
 });
 
-const  getMessageID =function(idAuthor, text){
+const getMessageID = function(idAuthor, text){
   return new Promise((resolve, reject) => {
   db.users.find({author_id: idAuthor,text: text},{author_id:1,_id:1},function(err,docs){
   if (err){
@@ -80,7 +80,7 @@ getMessageID("158","Voila le texte du comentaire").then((id)=>{
     console.log(docs);
   });
 });
-*/
+
 
 // var inputDate = new Date(myDate.toISOString());
 // MyModel.find({
