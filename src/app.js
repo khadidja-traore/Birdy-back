@@ -9,8 +9,9 @@ var db = new sqlite3.Database(':memory:');
 
 
 //connexion à mongodb
-var Datastore = require('nedb')
+var Datastore = require('nedb');
 mdb = new Datastore();
+
 
 // Détermine le répertoire de base
 const basedir = path.normalize(path.dirname(__dirname));
@@ -27,9 +28,9 @@ app.use(session({
     secret: "technoweb rocks"
 }));
 
-app.use('/api', api1.default(db));
+app.use('/apiUser', api1.default(db));
 app.use('/apiFriend', api2.default(db));
-app.use('/apiMessage', api3.default(mdb));
+app.use('/apiMessage', api3.default(mdb, db));
 
 app.on('close', () => {
     db.close();

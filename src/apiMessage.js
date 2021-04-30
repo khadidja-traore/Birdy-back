@@ -1,7 +1,9 @@
 const express = require("express");
 const Messages = require("./entities/messages.js");
+const Friends = require("./entities/friends.js");
+const Users = require("./entities/users.js");
 
-function init(mdb) {
+function init(mdb, db) {
     const router = express.Router();
     // On utilise JSON
     router.use(express.json());
@@ -11,62 +13,64 @@ function init(mdb) {
         console.log('API: method %s, path %s', req.method, req.path);
         console.log('Body', req.body);
         next();
+        
     });
     const messages = new Messages.default(mdb);
-    
-    //poster un message 
-    router.post("/message/", async (req, res) => {
-        try {
-            const { author_id, author_name, texte } = req.body;
-           
-            if (!author_name || !texte ) {
-                res.status(400).json({
-                    status: 400,
-                    "message": "Requête invalide : Champs manquants"
-                });
-                return;
-            }
-
-            messages.postMessageID(author_id,author_name,texte)
-            .then((message_id) => res.status(200).send({id: message_id}))
-            .catch((err) => res.status(500).send(err))
-            
-        } catch (e) {
-            res.status(500).json({
-                status: 500,
-                message: "erreur interne",
-                details: (e || "Erreur inconnue").toString()
-            });
-        }
-    });
-
+    const users = new Users.default(db);
+    const friends = new Friends.default(db);
 
     router
-        .route("/message/:author_id(\\d+)/:message_id(\\w)")
+        .route("/message/:author_id(\\d+)")
+
+        //poster un message 
+        .post( async (req, res) => {
+            try {
+                const {author_name, texte } = req.body;
+                idAuthor = req.params.author_id;
+           
+                if (!author_name || !texte) {
+                    res.status(400).json({
+                        status: 400,
+                        message: "Requête invalide : Champs manquants"
+                    });
+                    return;
+                }
+
+                messages.postMessageID(idAuthor,author_name,texte)
+                .then((message_id) => res.status(201).send({id: message_id}))
+                .catch((err) => res.status(500).send(err))
+            
+            } catch (e) {
+                res.status(500).json({
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                });
+            }
+        })
+
         //modifier un message 
         .put(async (req, res) => {
 
             try {
-                console.log("je passe ici 1")
-                const msg = await messages.exists(req.params.message_id);
-
-                if (!msg) {
-                    console.log("je passe ici 2")
-                    res.status(401).json({
-                    status: 401,
-                    message: "Message non trouvé"
-                    });
-                    return;
-                }
-                console.log("je passe ici 3")
-                const texte = req.body;
+                //const msg = await messages.exists(req.query.id);
+                const {idMessage, texte} = req.body;
                 const idAuthor = req.params.author_id;
-                const idMessage = req.params.message_id;
+                //console.log(idAuthor);
 
-                messages.modifyMessage(idAuthor, idMessage, texte)
-                .then((nb) => res.status(200).send({"nombre de message modifié": nb}))
+                messages.modifyMessage( idAuthor, idMessage, texte)
+                .then((nb) => {
+                    if (nb == 0){
+                        res.status(401).json({status: 401, message: "Erreur le message n'existe pas"});
+                        return;
+                    } else {
+                        res.status(200).json({status: 200, message: "Message modifié"});
+                        return;
+                    }
+                })
                 .catch((err) => res.status(500).send(err))
 
+            
             } catch(e) {
                 // Toute autre erreur
                 res.status(500).json({
@@ -81,8 +85,9 @@ function init(mdb) {
 
         .delete(async (req, res) => {
             try {
+                /*
+                const msg = await messages.exists(req.params.author_id);
 
-                const msg = await messages.exists(req.params.message_id);
                 if (!msg) {
                     res.status(401).json({
                     status: 401,
@@ -90,10 +95,29 @@ function init(mdb) {
                     });
                     return;
                 }
+                */
+                const idAuthor = req.params.author_id;
+                const texte = req.body;
+                console.log("dans apimessage avant l'appel de fonction, on a :", idAuthor, idMessage, texte)
+                /*
+                var idMessage = 0;
+                messages.getMessageID(idAuthor, texte)
+                .then((id) => {res.status(200).json({id_message: id});})
+                .catch((err) => res.status(400).json({message : "requête invalide", erreur: err}))
+                */
 
-                messages.deleteMessage(idAuthor, idMessage)
-                .then((nb) => res.status(200).send({"nombre de message supprimé": nb}))
-                .catch((err) => res.status(500).send(err))
+                messages.deleteMessage(idAuthor, idMessage, texte)
+                .then((nb) => {
+                    if (nb == 0){
+                        res.status(401).json({status: 401, message: "Erreur le message n'existe pas"});
+                        return;
+                    } else {
+                        res.status(200).json({status: 200, message: "Message supprimé"});
+                        return;
+                    }
+                })
+                .catch((err) => {console.log("erreur bd") ; res.status(500).send(err) })
+                
 
             } catch(e) {
                 res.status(500).json({
@@ -109,11 +133,11 @@ function init(mdb) {
         router.get("/message/:author_id(\\d+)", (req, res) => {
 
             try {
-
+                const idAuthor = req.params.author_id;
                 messages.getMessageFrom(idAuthor)
                 .then( (docs) => {
                     if (docs == []) {
-                        res.status(200).send("Vous n'avez pas de message")
+                        res.status(400).send("Vous n'avez pas de message")
                     } else {
                         res.status(200).send(docs)
                     }
@@ -136,10 +160,10 @@ function init(mdb) {
 
             try {
 
-                messages.getAllMessage(idAuthor)
+                messages.getAllMessage()
                 .then( (docs) => {
                     if (docs == []) {
-                        res.status(200).send("Il n'y a pas de message")
+                        res.status(400).send("Il n'y a pas de message")
                     } else {
                         res.status(200).send(docs)
                     }
@@ -157,18 +181,50 @@ function init(mdb) {
         });
 
         //recherche d'un message avec query 
-        router.get("/message/:author_id(\\d+)", (req, res) => {
+    
+        router.get("/message/recherche/:author_id(\\d+)", async (req, res) => {
+            try{
+                //no_query = 0 si pas de query 1 sinon. no_list = 0 si pas de liste d'amis
+                const {query, listfriend, no_query, no_list} = req.body     
+                console.log(query, listfriend, no_query, no_list);
 
+                if (!query && !listfriend) {
+                    res.status(400).json({
+                        status: 400,
+                        message: "Requête invalide : paramètres manquants"
+                    });
+                    return;
+                }
+                
 
+                messages.getMessageQuery(query, listfriend, no_query, no_list)
+                .then((docs) => {
+                    if (docs == []){
+                        console.log("pas de messages trouvés");
+                        res.status(200).json({status: 200, message: "Il n'y a pas de message."});
+                    } else{
+                        console.log("message trouvés");
+                        res.status(201).send(docs);
+                    }
+                    
+                })
+                .catch((err) => res.status(500).send(err) )
+
+            } catch(e) {
+                res.status(500).json({
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                    });
+                }
 
         });
-
-
-        router.route("/message/comment/:author_id(\\d+)/:message_id(\\d+)")
+        /*
+        router.route("/message/comment/:author_id(\\d+)")
             //poster un commentaire 
             .post(async (req, res) => {
                 try {
-
+                    
                     const msg = await messages.exists(req.params.message_id);
                     if (!msg) {
                         res.status(401).json({
@@ -177,10 +233,10 @@ function init(mdb) {
                         });
                         return;
                     }
+                    
 
-                    const { idAuthor2, text2 } = req.body;
+                    const { idMessage, idAuthor2, text2 } = req.body;
                     const idAuthor = req.params.author_id;
-                    const idMessage = req.params.message_id;
 
                     messages.postComment(idAuthor, idMessage, idAuthor2, text2)
                     .then((nb) => res.status(200).send({"nombre de commentaire posté": nb}))
@@ -230,7 +286,8 @@ function init(mdb) {
 
             })
 
-            */
+            
+            //supprimer un commentaire
             .delete(async(req, res) => {
                 try {
 
@@ -260,6 +317,7 @@ function init(mdb) {
                         });
                 }
             })
+            */
 
 
   

@@ -37,7 +37,7 @@
 // getdocument(db).then((res) => {
 //     console.log(res);
 // })
-
+/*
 var Datastore = require('nedb')
   , db = new Datastore();
 
@@ -90,3 +90,5 @@ getMessageID("158","Voila le texte du comentaire").then((id)=>{
 // ISODate
 // $gte: '1987-10-19', $lte: '1987-10-26' } 
 // - 60 * 60 * 1000;
+
+*/

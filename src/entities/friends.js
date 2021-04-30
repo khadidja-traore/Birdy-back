@@ -57,7 +57,49 @@ class Friends {
       })
     });
   }
+
+
+
+
+  async exists(firstU, secondU){
+    return new Promise((resolve, reject) => {
+      var stmt = this.db.prepare("SELECT * from friends WHERE (firstUser = ? AND secondUser = ? ) OR (firstUser = ? AND secondUser = ? )")
+      stmt.get([firstU, secondU, firstU, secondU], function(err, res) {
+        if (err){
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
+    });
+  }
+
+
+
+async getFriendsOf(user){
+  return new Promise((resolve, reject) => {
+    console.log("user :" ,user);
+    var stmt = this.db.prepare("SELECT firstUser, secondUser from friends WHERE ( secondUser = ? ) OR (firstUser = ?)");
+    stmt.all([user, user], function(err, rows) {
+      if (err){
+        reject(err);
+      } else {
+        console.log(rows);
+        var res = [];
+        rows.forEach(element => {
+          if (element.firstUser != user) res.push(element.firstUser);
+          if (element.secondUser != user) res.push(element.secondUser);
+        });
+        resolve(res);
+      }
+      
+    })
+  })
 }
+
+}
+
+
 
 exports.default = Friends;
 

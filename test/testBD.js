@@ -1,3 +1,4 @@
+/*
 const sqlite3 = require('sqlite3').verbose();
 let db = new sqlite3.Database(':memory:');
 
@@ -39,3 +40,14 @@ db.all(req4, [], (err, rows) => {
       console.log(row);
   });
 });
+
+db.get("SELECT * from users WHERE login = ?", ["pikachu"], function(err, res){
+  if(err){
+    console.log(err);
+  }else {
+    console.log(res)
+  }
+
+})
+
+*/

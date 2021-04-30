@@ -10,8 +10,17 @@ function init(db) {
     router.use((req, res, next) => {
         console.log('API: method %s, path %s', req.method, req.path);
         console.log('Body', req.body);
+        res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         next();
     });
+
+    /*router.use(function(req, res, next) {
+        
+        next();
+      });
+    */
+
     const users = new Users.default(db);
     router.post("/user/login", async (req, res) => {
         try {
@@ -106,7 +115,7 @@ function init(db) {
                     message: "utilisateur non trouvé"
                 });
             else
-                res.send(user);
+                res.status(200).send(user);
         }
         catch (e) {
             res.status(500).send(e);

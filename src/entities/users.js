@@ -12,6 +12,7 @@ class Users {
         if (err){
           reject(err);
         }else{
+          console.log("Utilisateur créé");
           resolve(this.lastID);    
         }
       })

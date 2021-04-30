@@ -16,13 +16,22 @@ function init(db) {
     const friends = new Friends.default(db);
 
     // add new friendship
-    router.put("/friends", (req, res) => {
+    router.post("/friends", async (req, res) => {
         const { firstUser, secondUser } = req.body;
         if (!firstUser || !secondUser) {
             console.log(firstUser);
             console.log(secondUser);
             res.status(400).send("At least one of the friend is missing!");
         } else {
+            
+            let friend_exist = await friends.exists(firstUser, secondUser)
+            console.log(friend_exist);
+            if (friend_exist){
+                res.status(400).json({status: 400, message:"Déjà amis"});
+                return;
+            }
+        
+
             friends.add(firstUser, secondUser)
                 .then((friends_id) => res.status(201).send({ id: friends_id }))
                 .catch((err) => res.status(500).send(err));
@@ -40,7 +49,7 @@ function init(db) {
                     message: "ami non trouvé"
                 });
             else
-                res.send(friend);
+                res.status(200).send(friend);
         }
         catch (e) {
             res.status(500).send(e);
@@ -59,7 +68,7 @@ function init(db) {
                     return;
                 }
                 friends.delete(req.params.friend_id)
-                    .then((friend_id) => res.status(201).json({ status: "200", message: "Ami supprimé" }))
+                    .then((friend_id) => res.status(200).json({ status: "200", message: "Ami supprimé" }))
                     .catch((err) => res.status(500).send(err));
             } catch (e) {
                 res.status(500).json({
@@ -79,12 +88,35 @@ function init(db) {
             if (!friendsList)
                 res.sendStatus(404);
             else
-                res.send(friendsList);
+                res.status(200).send(friendsList);
         }
         catch (e) {
             res.status(500).send(e);
         }
     })
+
+    //get the list of friend of a user 
+    router.get("/friends/liste/:user_id(\\d+)", (req, res) => {
+
+       
+        const {login} = req.body; //users.exists(req.params.user_id);
+        console.log("login :",  login);
+        friends.getFriendsOf(login)
+        .then((liste) => {
+            if (liste == []){
+                console.log("liste vide");
+                res.status(400).json({status: 400, message: "Pas de messages de vos amis"});
+            } else {
+                console.log('liste non vide');
+                res.status(200).json({status: 200, res: liste});
+            }
+        })
+        .catch((err) => res.status(500).send(err));
+    })
+
+
+
+
 
     return router;
 }

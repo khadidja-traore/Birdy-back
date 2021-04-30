@@ -1,4 +1,4 @@
-const chaiHttp = require('chai-http');
+/*const chaiHttp = require('chai-http');
 const chai = require('chai');
 const app = require('../src/app.js'); // c'est l'app "express"
 //import { describe, it } from 'mocha'
@@ -19,7 +19,7 @@ mocha.describe("Test de l'API user", () => {
         };
 
         request
-            .post('/api/user')
+            .post('/apiUser/user') //créer un compte
             .send(user)
 
             .then((res) => {
@@ -27,16 +27,16 @@ mocha.describe("Test de l'API user", () => {
                 console.log(`Retrieving user ${res.body.id}`)
                 return Promise.all([
                     request
-                        .get(`/api/user/${res.body.id}`)
+                        .get(`/apiUser/user/${res.body.id}`)   //récupérer un profil
                         .then((res) => {
                             res.should.have.status(200)
                             chai.assert.deepEqual(res.body, user)
                         }),
 
                     request
-                        .get(`/api/user/4`)
+                        .get(`/apiUser/user/4`)
                         .then((res) => {
-                            res.should.have.status(404)
+                            res.should.have.status(401)
                         }),
                 ])
             }).then(() => done(), (err) => done(err))
@@ -46,3 +46,4 @@ mocha.describe("Test de l'API user", () => {
     })
 })
 
+*/
