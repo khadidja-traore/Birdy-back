@@ -26,14 +26,14 @@ function init(db) {
             console.log(secondUser);
             res.status(400).send("At least one of the friend is missing!");
         } else {
-            
+
             let friend_exist = await friends.exists(firstUser, secondUser)
             console.log(friend_exist);
-            if (friend_exist){
-                res.status(400).json({status: 400, message:"Déjà amis"});
+            if (friend_exist) {
+                res.status(400).json({ status: 400, message: "Déjà amis" });
                 return;
             }
-        
+
 
             friends.add(firstUser, secondUser)
                 .then((friends_id) => res.status(201).send({ id: friends_id }))
@@ -42,9 +42,26 @@ function init(db) {
     });
 
     // get one specific friendship
-    router.route("/friends/:friend_id(\\d+)").get(async (req, res) => {
+    // router.route("/friends/:friend_id(\\d+)").get(async (req, res) => {
+    //     try {
+    //         const friend = await friends.get(req.params.friend_id);
+    //         console.log(friend);
+    //         if (!friend)
+    //             res.status(404).json({
+    //                 status: 404,
+    //                 message: "ami non trouvé"
+    //             });
+    //         else
+    //             res.status(200).send(friend);
+    //     }
+    //     catch (e) {
+    //         res.status(500).send(e);
+    //     }
+    // })
+
+    router.route("/friends/:friend_name(\\w+)").get(async (req, res) => {
         try {
-            const friend = await friends.get(req.params.friend_id);
+            const friend = await friends.get(req.params.friend_name);
             console.log(friend);
             if (!friend)
                 res.status(404).json({
@@ -58,29 +75,52 @@ function init(db) {
             res.status(500).send(e);
         }
     })
-        // delete one specific freindship
-        .delete(async (req, res, next) => {
-            try {
-                const friend = await friends.get(req.params.friend_id);
-                console.log(friend);
-                if (!friend) {
-                    res.status(404).json({
-                        status: 404,
-                        message: "ami non trouvé"
-                    });
-                    return;
-                }
-                friends.delete(req.params.friend_id)
-                    .then((friend_id) => res.status(200).json({ status: "200", message: "Ami supprimé" }))
-                    .catch((err) => res.status(500).send(err));
-            } catch (e) {
-                res.status(500).json({
-                    status: 500,
-                    message: "erreur interne",
-                    details: (e || "Erreur inconnue").toString()
+    // delete one specific freindship
+    // .delete(async (req, res, next) => {
+    //     try {
+    //         const friend = await friends.get(req.params.friend_id);
+    //         console.log(friend);
+    //         if (!friend) {
+    //             res.status(404).json({
+    //                 status: 404,
+    //                 message: "ami non trouvé"
+    //             });
+    //             return;
+    //         }
+    //         friends.delete(req.params.friend_id)
+    //             .then((friend_id) => res.status(200).json({ status: "200", message: "Ami supprimé" }))
+    //             .catch((err) => res.status(500).send(err));
+    //     } catch (e) {
+    //         res.status(500).json({
+    //             status: 500,
+    //             message: "erreur interne",
+    //             details: (e || "Erreur inconnue").toString()
+    //         });
+    //     }
+    // })
+
+    router.route("/friends/:friend_name(\\w+)").delete(async (req, res, next) => {
+        try {
+            const friend = await friends.get(req.params.friend_name);
+            console.log(friend);
+            if (!friend) {
+                res.status(404).json({
+                    status: 404,
+                    message: "ami non trouvé"
                 });
+                return;
             }
-        })
+            friends.delete(req.params.friend_name)
+                .then((friend_name) => res.status(200).json({ status: "200", message: "Ami supprimé" }))
+                .catch((err) => res.status(500).send(err));
+        } catch (e) {
+            res.status(500).json({
+                status: 500,
+                message: "erreur interne",
+                details: (e || "Erreur inconnue").toString()
+            });
+        }
+    })
 
     // get the entire list of friends
     router.route("/friends").get(async (req, res) => {
@@ -101,20 +141,20 @@ function init(db) {
     //get the list of friend of a user 
     router.get("/friends/liste/:user_id(\\d+)", (req, res) => {
 
-       
-        const {login} = req.body; //users.exists(req.params.user_id);
-        console.log("login :",  login);
+
+        const { login } = req.body; //users.exists(req.params.user_id);
+        console.log("login :", login);
         friends.getFriendsOf(login)
-        .then((liste) => {
-            if (liste == []){
-                console.log("liste vide");
-                res.status(400).json({status: 400, message: "Pas de messages de vos amis"});
-            } else {
-                console.log('liste non vide');
-                res.status(200).json({status: 200, res: liste});
-            }
-        })
-        .catch((err) => res.status(500).send(err));
+            .then((liste) => {
+                if (liste == []) {
+                    console.log("liste vide");
+                    res.status(400).json({ status: 400, message: "Pas de messages de vos amis" });
+                } else {
+                    console.log('liste non vide');
+                    res.status(200).json({ status: 200, res: liste });
+                }
+            })
+            .catch((err) => res.status(500).send(err));
     })
 
 
