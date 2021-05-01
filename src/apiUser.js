@@ -12,6 +12,7 @@ function init(db) {
         console.log('Body', req.body);
         res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.header("Access-Control-Allow-Methods", "DELETE, PUT");
         next();
     });
 
@@ -53,9 +54,11 @@ function init(db) {
                     else {
                         // C'est bon, nouvelle session créée
                         req.session.userid = userid;
+                        console.log("id de la session", req.session.userid);
                         res.status(200).json({
                             status: 200,
-                            message: "Login et mot de passe accepté"
+                            message: "Login et mot de passe accepté",
+                            id_user: userid
                         });
                     }
                 });
@@ -82,6 +85,8 @@ function init(db) {
     router.delete("/user/logout/:user_id(\\d+)", (req, res) => {
 
         userid = req.params.user_id;
+        console.log("id en paramètres", userid);
+        console.log("id de la session", req.session.userid )
         
         if(req.session.userid != userid){
             res.status(403).json({status: 403, message: "Pas la bonne session"});
@@ -125,6 +130,7 @@ function init(db) {
             try {
 
                 userid = req.params.user_id;
+                
         
                 if(req.session.userid != userid){
                     res.status(403).json({status: 403, message: "Suppresion interdite"});
