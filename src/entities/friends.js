@@ -19,10 +19,23 @@ class Friends {
     });
   }
 
-  async get(friend_id) {
+  // async get(friend_id) {
+  //   return new Promise((resolve, reject) => {
+  //     var stmt = this.db.prepare("SELECT * FROM friends WHERE rowid = ?")
+  //     stmt.get([friend_id], function (err, res) {
+  //       if (err) {
+  //         reject(err);
+  //       } else {
+  //         resolve(res);
+  //       }
+  //     })
+  //   });
+  // }
+
+  async get(friend_name) {
     return new Promise((resolve, reject) => {
-      var stmt = this.db.prepare("SELECT * FROM friends WHERE rowid = ?")
-      stmt.get([friend_id], function (err, res) {
+      var stmt = this.db.prepare("SELECT * FROM friends WHERE secondUser = ?")
+      stmt.get([friend_name], function (err, res) {
         if (err) {
           reject(err);
         } else {
@@ -45,14 +58,27 @@ class Friends {
     });
   }
 
-  async delete(friend_id) {
+  // async delete(friend_id) {
+  //   return new Promise((resolve, reject) => {
+  //     var stmt = this.db.prepare("DELETE FROM friends WHERE rowid = ?")
+  //     stmt.run([friend_id], function (err) {
+  //       if (err) {
+  //         reject(err);
+  //       } else {
+  //         resolve(friend_id)
+  //       }
+  //     })
+  //   });
+  // }
+
+  async delete(friend_name) {
     return new Promise((resolve, reject) => {
-      var stmt = this.db.prepare("DELETE FROM friends WHERE rowid = ?")
-      stmt.run([friend_id], function (err) {
+      var stmt = this.db.prepare("DELETE FROM friends WHERE secondUser = ?")
+      stmt.run([friend_name], function (err) {
         if (err) {
           reject(err);
         } else {
-          resolve(friend_id)
+          resolve(friend_name)
         }
       })
     });
