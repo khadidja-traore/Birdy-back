@@ -140,19 +140,16 @@ function init(db) {
     })
 
     //get the list of friend of a user 
-    router.get("/friends/liste/:user_id(\\d+)", (req, res) => {
-
-
-        const { login } = req.body; //users.exists(req.params.user_id);
-        console.log("login :", login);
-        friends.getFriendsOf(login)
+    router.get("/friends/liste/:user_login(\\w+)", (req, res) => {
+        console.log("login :", req.params.user_login);
+        friends.getFriendsOf(req.params.user_login)
             .then((liste) => {
                 if (liste == []) {
                     console.log("liste vide");
                     res.status(400).json({ status: 400, message: "Pas de messages de vos amis" });
                 } else {
                     console.log('liste non vide');
-                    res.status(200).json({ status: 200, res: liste });
+                    res.status(200).send(liste);
                 }
             })
             .catch((err) => res.status(500).send(err));

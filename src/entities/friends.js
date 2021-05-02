@@ -106,16 +106,10 @@ async getFriendsOf(user){
   return new Promise((resolve, reject) => {
     console.log("user :" ,user);
     var stmt = this.db.prepare("SELECT firstUser, secondUser from friends WHERE ( secondUser = ? ) OR (firstUser = ?)");
-    stmt.all([user, user], function(err, rows) {
+    stmt.all([user, user], function(err, res) {
       if (err){
         reject(err);
       } else {
-        console.log(rows);
-        var res = [];
-        rows.forEach(element => {
-          if (element.firstUser != user) res.push(element.firstUser);
-          if (element.secondUser != user) res.push(element.secondUser);
-        });
         resolve(res);
       }
       
