@@ -18,6 +18,8 @@ function init(db) {
     });
 
     const users = new Users.default(db);
+
+    //login
     router.post("/user/login", async (req, res) => {
         try {
             const { login, password } = req.body;
@@ -77,6 +79,7 @@ function init(db) {
         }
     });
 
+    //logout
     router.delete("/user/logout/:user_id(\\d+)", (req, res) => {
 
         userid = req.params.user_id;
@@ -104,6 +107,7 @@ function init(db) {
 
     });
 
+    //récupérer les informations d'un utilisateur
     router
         .route("/user/:user_id(\\d+)")
         .get(async (req, res) => {
@@ -121,6 +125,7 @@ function init(db) {
             res.status(500).send(e);
         }
     })
+    //supprimer un utilisateur
         .delete(async (req, res, next) => {
             try {
 
@@ -157,6 +162,7 @@ function init(db) {
 
     })
 
+    //création d'un utilisateur
     router.post("/user", async (req, res) => {   
         try{
             const { login, password, lastname, firstname } = req.body;
@@ -188,7 +194,7 @@ function init(db) {
         
     });
 
-
+    //récupère la liste de tous les utilisateurs inscrits 
     router.get("/user/all", async (req, res) => {
         try{
             users.getall()

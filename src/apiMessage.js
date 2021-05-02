@@ -80,6 +80,7 @@ function init(mdb, db) {
             }
         })
 
+        //supprimer un message
         .delete(async (req, res) => {
             try {
                 const idAuthor = req.params.author_id;
@@ -107,7 +108,7 @@ function init(mdb, db) {
             }
         });
 
-    //affichage des messages d'un profil
+    //récupère tous les messages d'un utilisateur
     router.get("/message/:author_id(\\d+)", (req, res) => {
 
         try {
@@ -133,7 +134,7 @@ function init(mdb, db) {
 
     });
 
-    //affichage des messages pour la page d'acceuil
+    //récupère l'ensemble des derniers messages postés
     router.get("/message", (req, res) => {
 
         try {
@@ -158,7 +159,7 @@ function init(mdb, db) {
         }
     });
 
-    //recherche d'un message avec query 
+    //recupère les messages ayant un mot clé 
     router.get("/message/recherche/:query(\\w+)", async (req, res) => {
         try {
             const tmp_query = req.params.query;

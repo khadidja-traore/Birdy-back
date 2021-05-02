@@ -6,6 +6,7 @@ class Messages {
     this.mdb = mdb;
   }
 
+  //créer un message
   async postMessageID(idAuthor, login, text) {
     return new Promise((resolve, reject) => {
       this.mdb.insert({ author_id: idAuthor, author_name: login, date: new Date(), text: text }, function (err, newDoc) {
@@ -18,7 +19,7 @@ class Messages {
       });
     });
   }
-
+  //vérifier si un message existe
   async exists(idMessage) {
     return new Promise((resolve, reject) => {
       this.mdb.find({ _id: idMessage }, {}, function (err, doc) {
@@ -30,7 +31,7 @@ class Messages {
       });
     });
   }
-
+  //récuperer l'id d'un message dont on connait l'auteur et le texte
   async getMessageID(idAuthor, texte) {
     return new Promise((resolve, reject) => {
       this.mdb.find({ author_id: idAuthor, text: texte }, { author_id: 1, _id: 1 }, function (err, doc) {
@@ -44,7 +45,7 @@ class Messages {
     });
   }
 
-  //liste des messages ayant un mot clé
+  //liste des messages ayant un mot clé 
   async getMessageQuery(query) {
     console.log('getMessageQuery is called!');
     return new Promise((resolve, reject) => {
@@ -67,6 +68,7 @@ class Messages {
     });
   }
 
+  //recupérer les messages d'un utilisateur
   async getMessageFrom(idAuthor) {
     return new Promise((resolve, reject) => {
       this.mdb.find({ author_id: idAuthor }, { author_id: 1, author_name: 1, date: 1, text: 1 }, function (err, docs) {
@@ -81,7 +83,7 @@ class Messages {
 
     });
   }
-
+  //récupérer les derniers messages postés
   async getAllMessage() {
     return new Promise((resolve, reject) => {
       this.mdb.find({ date: { $gt: new Date(Date.now() - 60 * 60 * 1000) } }, { author_id: 1, author_name: 1, date: 1, text: 1 }, function (err, docs) {
@@ -96,7 +98,7 @@ class Messages {
     });
   }
 
-
+  //supprimer un message
   async deleteMessage(idAuthor, idMessage, texte) {
     return new Promise((resolve, reject) => {
       this.mdb.remove({ _id: idMessage }, {}, function (err, numRemoved) {
@@ -109,7 +111,7 @@ class Messages {
     });
   }
 
-
+  //modifier un message
   async modifyMessage(idAuthor, idMessage, texte) {
     return new Promise((resolve, reject) => {
       this.mdb.update({ author_id: idAuthor, _id: idMessage }, { $set: { text: texte } }, {}, function (err, numReplaced) {

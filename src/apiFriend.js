@@ -21,7 +21,7 @@ function init(db) {
     const friends = new Friends.default(db);
     const users = new Users.default(db);
 
-    // add new friendship
+    //ajout d'une nouvelle amitié
     router.post("/friends", async (req, res) => {
         const { firstUser, secondUser } = req.body;
         if (!firstUser || !secondUser) {
@@ -57,7 +57,9 @@ function init(db) {
         }
     });
 
-    router.route("/friends/:friend_name(\\w+)").get(async (req, res) => {
+    //récupérer des amitiés spécifiques où friend_name est le second ami
+    router.route("/friends/:friend_name(\\w+)")
+    .get(async (req, res) => {
         try {
             const friend = await friends.get(req.params.friend_name);
             console.log(friend);
@@ -74,7 +76,9 @@ function init(db) {
         }
     })
 
-    router.route("/friends/:friend_name(\\w+)").delete(async (req, res, next) => {
+    //supprimer les amitiés où friend_name est le second ami
+    router.route("/friends/:friend_name(\\w+)")
+    .delete(async (req, res, next) => {
         try {
             const friend = await friends.get(req.params.friend_name);
             console.log(friend);
@@ -97,8 +101,9 @@ function init(db) {
         }
     })
 
-    // get the entire list of friends
-    router.route("/friends").get(async (req, res) => {
+    //récupèe toute la liste des amitiés 
+    router.route("/friends")
+    .get(async (req, res) => {
         try {
             const friendsList = await friends.getList();
             console.log("The list of friends:")
@@ -113,7 +118,7 @@ function init(db) {
         }
     })
 
-    //get the list of friend of a user 
+    //récupère la liste des amis d'un utilisateurs
     router.get("/friends/liste/:user_login(\\w+)", (req, res) => {
         console.log("login :", req.params.user_login);
         friends.getFriendsOf(req.params.user_login)

@@ -5,6 +5,7 @@ class Friends {
     console.log("Friends table created");
   }
 
+  //créer une amitié
   add(firstUser, secondUser) {
     let _this = this;
     return new Promise((resolve, reject) => {
@@ -18,7 +19,7 @@ class Friends {
       })
     });
   }
-
+  //récupérer les informations des amitiés où friend_name est le second ami
   async get(friend_name) {
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("SELECT * FROM friends WHERE secondUser = ?")
@@ -32,6 +33,7 @@ class Friends {
     });
   }
 
+  //récupérer la liste de toutes les amitiés
   async getList() {
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("SELECT DISTINCT * FROM friends")
@@ -44,7 +46,7 @@ class Friends {
       })
     });
   }
-
+  //supprimer une amitié dont friend_name est le second ami
   async delete(friend_name) {
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("DELETE FROM friends WHERE secondUser = ?")
@@ -57,7 +59,7 @@ class Friends {
       })
     });
   }
-
+  //tester si deux utilisateurs sont amis
   async exists(firstU, secondU){
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("SELECT * from friends WHERE (firstUser = ? AND secondUser = ? ) OR (firstUser = ? AND secondUser = ? )")
@@ -70,7 +72,7 @@ class Friends {
       });
     });
   }
-
+//récupérer la liste de tous les amis de l'utilisateur user
 async getFriendsOf(user){
   return new Promise((resolve, reject) => {
     console.log("user :" ,user);

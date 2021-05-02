@@ -18,6 +18,7 @@ mocha.describe("Test de l'API user", () => {
             firstname: "pika"
         };
 
+       
         request
             .post('/apiUser/user') //créer un compte
             .send(user)
@@ -38,6 +39,7 @@ mocha.describe("Test de l'API user", () => {
                         .then((res) => {
                             res.should.have.status(401)
                         }),
+
                 ])
             }).then(() => done(), (err) => done(err))
             .finally(() => {
@@ -45,3 +47,4 @@ mocha.describe("Test de l'API user", () => {
             })
     })
 })
+
