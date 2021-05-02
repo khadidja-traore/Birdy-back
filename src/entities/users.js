@@ -32,6 +32,19 @@ class Users {
     });
   }
 
+  async getall() {
+    return new Promise((resolve, reject) => {
+      var stmt = this.db.prepare("SELECT rowid as id, login FROM users ")
+      stmt.all([], function(err, res){
+        if (err){
+          reject(err);
+        }else{
+          resolve(res);
+        }
+      })
+    });
+  }
+
   async exists(login) {
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("SELECT login FROM users WHERE login = ?")
