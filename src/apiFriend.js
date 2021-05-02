@@ -118,7 +118,7 @@ function init(db) {
         }
     })
 
-    //récupère la liste des amis d'un utilisateurs
+    //récupère la liste des amis d'un utilisateur
     router.get("/friends/liste/:user_login(\\w+)", (req, res) => {
         console.log("login :", req.params.user_login);
         friends.getFriendsOf(req.params.user_login)
