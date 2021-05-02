@@ -30,6 +30,11 @@ function init(db) {
             res.status(400).send("At least one of the friend is missing!");
         } else {
 
+            if( firstUser == secondUser){
+                res.status(403).json({status: 403, message: "Vous ne pouvez pas être ami avec vous même"})
+                return;
+            }
+
             if(! await users.exists(secondUser)) {
                 res.status(401).json({
                     status: 401,
@@ -156,7 +161,7 @@ function init(db) {
             .then((liste) => {
                 if (liste == []) {
                     console.log("liste vide");
-                    res.status(400).json({ status: 400, message: "Pas de messages de vos amis" });
+                    res.status(400).json({ status: 400, message: "Pas encore d'amis" });
                 } else {
                     console.log('liste non vide');
                     res.status(200).send(liste);

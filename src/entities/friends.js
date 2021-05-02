@@ -90,7 +90,7 @@ class Friends {
   async exists(firstU, secondU){
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("SELECT * from friends WHERE (firstUser = ? AND secondUser = ? ) OR (firstUser = ? AND secondUser = ? )")
-      stmt.get([firstU, secondU, firstU, secondU], function(err, res) {
+      stmt.get([firstU, secondU, secondU, firstU], function(err, res) {
         if (err){
           reject(err);
         } else {
@@ -110,8 +110,13 @@ async getFriendsOf(user){
       if (err){
         reject(err);
       } else {
-        resolve(res);
-      }
+        var friends = [];
+        res.forEach(element => {
+          if( element.firstUser != user && friends.indexOf(element.firstUser) == -1) friends.push(element.firstUser);
+          if( element.secondUser != user && friends.indexOf(element.secondUser) == -1) friends.push(element.secondUser);
+        });
+        resolve(friends);
+      }         
       
     })
   })
