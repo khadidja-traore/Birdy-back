@@ -194,6 +194,22 @@ function init(db) {
         
     });
 
+
+    router.get("/user/all", async (req, res) => {
+        try{
+            users.getall()
+            .then((tab) => res.status(200).send(tab))
+            .catch((err) => res.status(500).send(err));
+
+        }catch(e){
+            res.status(500).json({
+                status: 500,
+                message: "erreur interne",
+                details: (e || "Erreur inconnue").toString()
+            });
+        }
+    })
+
     return router;
 }
 exports.default = init;
