@@ -186,22 +186,17 @@ function init(mdb, db) {
 
     //recherche d'un message avec query 
 
-    router.get("/message/recherche/:author_id(\\d+)", async (req, res) => {
+    router.get("/message/recherche/:query(\\w+)", async (req, res) => {
         try {
-            //no_query = 0 si pas de query 1 sinon. no_list = 0 si pas de liste d'amis
-            const { query, listfriend, no_query, no_list } = req.body
-            console.log(query, listfriend, no_query, no_list);
-
-            if (!query && !listfriend) {
+            const tmp_query = req.params.query;
+            if (!tmp_query) {
                 res.status(400).json({
                     status: 400,
                     message: "Requête invalide : paramètres manquants"
                 });
                 return;
             }
-
-
-            messages.getMessageQuery(query, listfriend, no_query, no_list)
+            messages.getMessageQuery(tmp_query)
                 .then((docs) => {
                     if (docs == []) {
                         console.log("pas de messages trouvés");
@@ -213,7 +208,6 @@ function init(mdb, db) {
 
                 })
                 .catch((err) => res.status(500).send(err))
-
         } catch (e) {
             res.status(500).json({
                 status: 500,
@@ -223,6 +217,45 @@ function init(mdb, db) {
         }
 
     });
+
+    // router.get("/message/recherche/:author_id(\\d+)", async (req, res) => {
+    //     try {
+    //         //no_query = 0 si pas de query 1 sinon. no_list = 0 si pas de liste d'amis
+    //         const { query, listfriend, no_query, no_list } = req.body
+    //         console.log(query, listfriend, no_query, no_list);
+
+    //         if (!query && !listfriend) {
+    //             res.status(400).json({
+    //                 status: 400,
+    //                 message: "Requête invalide : paramètres manquants"
+    //             });
+    //             return;
+    //         }
+
+
+    //         messages.getMessageQuery(query, listfriend, no_query, no_list)
+    //             .then((docs) => {
+    //                 if (docs == []) {
+    //                     console.log("pas de messages trouvés");
+    //                     res.status(200).json({ status: 200, message: "Il n'y a pas de message." });
+    //                 } else {
+    //                     console.log("message trouvés");
+    //                     res.status(201).send(docs);
+    //                 }
+
+    //             })
+    //             .catch((err) => res.status(500).send(err))
+
+    //     } catch (e) {
+    //         res.status(500).json({
+    //             status: 500,
+    //             message: "erreur interne",
+    //             details: (e || "Erreur inconnue").toString()
+    //         });
+    //     }
+
+    // });
+
     /*
     router.route("/message/comment/:author_id(\\d+)")
         //poster un commentaire 
