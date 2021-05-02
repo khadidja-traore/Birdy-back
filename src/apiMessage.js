@@ -174,14 +174,15 @@ function init(mdb, db) {
                 .then((docs) => {
                     if (docs == []) {
                         console.log("pas de messages trouvés");
-                        res.status(200).json({ status: 200, message: "Il n'y a pas de message." });
+                        res.status(200).json({ status: 200, message: "Il n'y a pas de messages." });
                     } else {
-                        console.log("message trouvés");
+                        console.log("messages trouvés");
                         res.status(201).send(docs);
                     }
 
                 })
                 .catch((err) => res.status(500).send(err))
+                
         } catch (e) {
             res.status(500).json({
                 status: 500,
