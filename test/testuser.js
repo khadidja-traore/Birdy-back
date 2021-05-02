@@ -35,7 +35,7 @@ mocha.describe("Test de l'API user", () => {
                         }),
 
                     request
-                        .get(`/apiUser/user/4`)
+                        .get(`/apiUser/user/8`)
                         .then((res) => {
                             res.should.have.status(401)
                         }),

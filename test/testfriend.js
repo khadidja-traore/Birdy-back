@@ -12,21 +12,21 @@ mocha.describe("Test de l'API friend", () => {
     mocha.it("friend", (done) => {
         const request = chai.request(app.default).keepOpen();
         const amis1 = {
-            firstUser: "pikachu",
+            firstUser: "pika",
             secondUser: "mario",
            
         };
 
         const amis2 = {
             firstUser: "suzy",
-            secondUser: "pikachu"
+            secondUser: "pika"
         };
 
         const user1 = {
-            login: "pikachu",
+            login: "pika",
             password: "1234",
-            lastname: "chu",
-            firstname: "pika"
+            lastname: "ka",
+            firstname: "pi"
         };
 
         const user2 = {
@@ -60,6 +60,14 @@ mocha.describe("Test de l'API friend", () => {
 
                     request
                         .post('/apiUser/user') 
+                        .send(user1)
+                        .then((res) => {
+                            res.should.have.status(200)
+                           
+                        }),
+
+                    request
+                        .post('/apiUser/user') 
                         .send(user2)
                         .then((res) => {
                             res.should.have.status(200)
@@ -85,14 +93,14 @@ mocha.describe("Test de l'API friend", () => {
                         }),
 
                     request
-                        .get(`/apiFriend/friends/${res.body.id}`)   //récupérer id de l'amitié
+                        .get(`/apiFriend/friends/mario`)   //récupérer id de l'amitié
                         .then((res) => {
                             res.should.have.status(200)
                            
                         }),
 
                     request
-                        .get(`/apiFriend/friends/4`)
+                        .get(`/apiFriend/friends/toto`)
                         .then((res) => {
                             res.should.have.status(404) //erreur 404 ami non trouvé
                         }),
@@ -118,8 +126,7 @@ mocha.describe("Test de l'API friend", () => {
                     
 /*
                     request
-                        .get(`/apiFriend/friends/liste/1`)
-                        .send({login : "pikachu"})
+                        .get(`/apiFriend/friends/liste/pika`)
                         .then((res)=>{
                             res.should.have.status(200)
                             chai.assert.deepEqual(res.body, {"status": 200,"res": ["mario","suzy"]})

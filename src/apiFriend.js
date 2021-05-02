@@ -101,7 +101,7 @@ function init(db) {
         }
     })
 
-    //récupèe toute la liste des amitiés 
+    //récupère toute la liste des amitiés 
     router.route("/friends")
     .get(async (req, res) => {
         try {
