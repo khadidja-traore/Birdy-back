@@ -1,5 +1,6 @@
 const express = require("express");
 const Friends = require("./entities/friends.js");
+const Users = require("./entities/users.js");
 
 function init(db) {
     const router = express.Router();
@@ -18,6 +19,7 @@ function init(db) {
     });
 
     const friends = new Friends.default(db);
+    const users = new Users.default(db);
 
     // add new friendship
     router.post("/friends", async (req, res) => {
@@ -27,6 +29,14 @@ function init(db) {
             console.log(secondUser);
             res.status(400).send("At least one of the friend is missing!");
         } else {
+
+            if(! await users.exists(secondUser)) {
+                res.status(401).json({
+                    status: 401,
+                    message: "Ami inconnu"
+                });
+                return;
+            }
 
             let friend_exist = await friends.exists(firstUser, secondUser)
             console.log(friend_exist);
