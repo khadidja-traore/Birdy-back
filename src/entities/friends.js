@@ -19,19 +19,6 @@ class Friends {
     });
   }
 
-  // async get(friend_id) {
-  //   return new Promise((resolve, reject) => {
-  //     var stmt = this.db.prepare("SELECT * FROM friends WHERE rowid = ?")
-  //     stmt.get([friend_id], function (err, res) {
-  //       if (err) {
-  //         reject(err);
-  //       } else {
-  //         resolve(res);
-  //       }
-  //     })
-  //   });
-  // }
-
   async get(friend_name) {
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("SELECT * FROM friends WHERE secondUser = ?")
@@ -58,19 +45,6 @@ class Friends {
     });
   }
 
-  // async delete(friend_id) {
-  //   return new Promise((resolve, reject) => {
-  //     var stmt = this.db.prepare("DELETE FROM friends WHERE rowid = ?")
-  //     stmt.run([friend_id], function (err) {
-  //       if (err) {
-  //         reject(err);
-  //       } else {
-  //         resolve(friend_id)
-  //       }
-  //     })
-  //   });
-  // }
-
   async delete(friend_name) {
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("DELETE FROM friends WHERE secondUser = ?")
@@ -84,9 +58,6 @@ class Friends {
     });
   }
 
-
-
-
   async exists(firstU, secondU){
     return new Promise((resolve, reject) => {
       var stmt = this.db.prepare("SELECT * from friends WHERE (firstUser = ? AND secondUser = ? ) OR (firstUser = ? AND secondUser = ? )")
@@ -99,8 +70,6 @@ class Friends {
       });
     });
   }
-
-
 
 async getFriendsOf(user){
   return new Promise((resolve, reject) => {
@@ -123,8 +92,6 @@ async getFriendsOf(user){
 }
 
 }
-
-
 
 exports.default = Friends;
 

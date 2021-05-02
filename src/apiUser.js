@@ -17,12 +17,6 @@ function init(db) {
         next();
     });
 
-    /*router.use(function(req, res, next) {
-        
-        next();
-      });
-    */
-
     const users = new Users.default(db);
     router.post("/user/login", async (req, res) => {
         try {
@@ -163,7 +157,7 @@ function init(db) {
 
     })
 
-    router.post("/user", async (req, res) => {                   //création 
+    router.post("/user", async (req, res) => {   
         try{
             const { login, password, lastname, firstname } = req.body;
             if (!login || !password || !lastname || !firstname) {

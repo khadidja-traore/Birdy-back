@@ -1,4 +1,4 @@
-/*const chaiHttp = require('chai-http');
+const chaiHttp = require('chai-http');
 const chai = require('chai');
 const app = require('../src/app.js'); // c'est l'app "express"
 //import { describe, it } from 'mocha'
@@ -45,5 +45,3 @@ mocha.describe("Test de l'API user", () => {
             })
     })
 })
-
-*/

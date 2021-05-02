@@ -30,12 +30,12 @@ function init(db) {
             res.status(400).send("At least one of the friend is missing!");
         } else {
 
-            if( firstUser == secondUser){
-                res.status(403).json({status: 403, message: "Vous ne pouvez pas être ami avec vous même"})
+            if (firstUser == secondUser) {
+                res.status(403).json({ status: 403, message: "Vous ne pouvez pas être ami avec vous même" })
                 return;
             }
 
-            if(! await users.exists(secondUser)) {
+            if (! await users.exists(secondUser)) {
                 res.status(401).json({
                     status: 401,
                     message: "Ami inconnu"
@@ -57,24 +57,6 @@ function init(db) {
         }
     });
 
-    // get one specific friendship
-    // router.route("/friends/:friend_id(\\d+)").get(async (req, res) => {
-    //     try {
-    //         const friend = await friends.get(req.params.friend_id);
-    //         console.log(friend);
-    //         if (!friend)
-    //             res.status(404).json({
-    //                 status: 404,
-    //                 message: "ami non trouvé"
-    //             });
-    //         else
-    //             res.status(200).send(friend);
-    //     }
-    //     catch (e) {
-    //         res.status(500).send(e);
-    //     }
-    // })
-
     router.route("/friends/:friend_name(\\w+)").get(async (req, res) => {
         try {
             const friend = await friends.get(req.params.friend_name);
@@ -91,29 +73,6 @@ function init(db) {
             res.status(500).send(e);
         }
     })
-    // delete one specific freindship
-    // .delete(async (req, res, next) => {
-    //     try {
-    //         const friend = await friends.get(req.params.friend_id);
-    //         console.log(friend);
-    //         if (!friend) {
-    //             res.status(404).json({
-    //                 status: 404,
-    //                 message: "ami non trouvé"
-    //             });
-    //             return;
-    //         }
-    //         friends.delete(req.params.friend_id)
-    //             .then((friend_id) => res.status(200).json({ status: "200", message: "Ami supprimé" }))
-    //             .catch((err) => res.status(500).send(err));
-    //     } catch (e) {
-    //         res.status(500).json({
-    //             status: 500,
-    //             message: "erreur interne",
-    //             details: (e || "Erreur inconnue").toString()
-    //         });
-    //     }
-    // })
 
     router.route("/friends/:friend_name(\\w+)").delete(async (req, res, next) => {
         try {
@@ -169,10 +128,6 @@ function init(db) {
             })
             .catch((err) => res.status(500).send(err));
     })
-
-
-
-
 
     return router;
 }
