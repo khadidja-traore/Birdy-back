@@ -99,7 +99,7 @@ class Messages {
   }
 
   //supprimer un message
-  async deleteMessage(idAuthor, idMessage, texte) {
+  async deleteMessage(idMessage) {
     return new Promise((resolve, reject) => {
       this.mdb.remove({ _id: idMessage }, {}, function (err, numRemoved) {
         if (err) {

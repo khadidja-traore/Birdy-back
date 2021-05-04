@@ -84,10 +84,10 @@ function init(mdb, db) {
         .delete(async (req, res) => {
             try {
                 const idAuthor = req.params.author_id;
-                const texte = req.body;
-                console.log("dans apimessage avant l'appel de fonction, on a :", idAuthor, idMessage, texte)
+                const {idMessage} = req.body;
+                console.log("dans apimessage avant l'appel de fonction, on a :", idMessage)
 
-                messages.deleteMessage(idAuthor, idMessage, texte)
+                messages.deleteMessage(idMessage)
                     .then((nb) => {
                         if (nb == 0) {
                             res.status(401).json({ status: 401, message: "Erreur le message n'existe pas" });
